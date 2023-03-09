@@ -1,0 +1,164 @@
+:root {
+  --border-radius-rounded: 8px;
+  --font-family-main: 'Montserrat Alternates', sans-serif;
+  --font-family-logo: 'Rock Salt', cursive;
+  --color-stone-blue: #243B55;
+  --color-navy-blue: #141E30;
+}
+
+body {
+  margin: 0 auto;
+  color: white;
+  background-color: var(--color-stone-blue);
+  font: 0.75rem var(--font-family-main);
+  text-align: center;
+  user-select: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 1rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-rounded);
+  box-shadow: 2px 2px 10px white;
+}
+
+.controls__group {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+}
+
+.controls__title {
+  margin: 0 auto;
+}
+
+.btn {
+  padding: 0.5rem;
+  border: 1px solid black;
+  border-radius: var(--border-radius-rounded);
+  margin: 0.25rem;
+  font: inherit;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover,
+.btn--selected {
+  color: white;
+  border-color: white;
+  background-color: var(--color-navy-blue);
+}
+
+.btn:active {
+  background-color: var(--color-stone-blue);
+}
+
+.btn__icon::after{
+  content: "\00a0\00a0\00a0";
+}
+
+.btn-color__picker,
+.btn-size__label {
+  display: block;
+}
+
+.btn-color__picker {
+  margin: 0.25rem auto 0;
+  width: 80%;
+}
+
+.toy {
+  position: relative;
+  padding: 0 10vmin 10vmin;
+  border-radius: var(--border-radius-rounded);
+  box-shadow: inset 2px 2px 3px rgba(255, 0, 0, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+  background-color: darkred;
+}
+
+.toy__title {
+  margin: 1.5vmin 0;
+  color: gold;
+  font: bold 3.5vmin var(--font-family-logo);
+  line-height: 2;
+}
+
+.grid {
+  display: grid;
+  border: 2px solid darkgrey;
+  border-radius: var(--border-radius-rounded);
+  width: 65vmin;
+  height: 65vmin;
+  cursor: crosshair;
+}
+
+.grid__cell {
+  background-color: lightgray;
+}
+
+.grid__cell--gridlines {
+  border: 0.1px solid darkgrey;
+}
+
+.grid__cell--top-left {
+  border-top-left-radius: 6px;
+}
+
+.grid__cell--top-right {
+  border-top-right-radius: 6px;
+}
+
+.grid__cell--bottom-left {
+  border-bottom-left-radius: 6px;
+}
+
+.grid__cell--bottom-right {
+  border-bottom-right-radius: 6px;
+}
+
+.knob {
+  position: absolute;
+  bottom: 1.75vmin;
+  border-radius: 50%;
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.1), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+  background-color: white;
+  width: 7.5vmin;
+  height: 7.5vmin;
+}
+
+.knob--left {
+  left: 1.75vmin;
+}
+
+.knob--right {
+  right: 1.75vmin;
+}
+
+.footer {
+  background-color: var(--color-navy-blue);
+}
+
+.footer__text,
+.footer__link,
+.footer__link:visited {
+  color: inherit;
+}
+
+.footer__link:hover {
+  color: lightblue;
+}

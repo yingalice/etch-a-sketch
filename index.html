@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etch A Sketch</title>
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&family=Rock+Salt&display=swap">
+  <script src="https://kit.fontawesome.com/602d755a29.js" crossorigin="anonymous"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header"></header>
+    <main class="main">
+      <div class="controls">
+        <fieldset class="controls__group modes">
+          <legend class="controls__title">MODES</legend>
+          <button class="btn btn-color" data-mode="color" type="button">
+            <i class="btn__icon fa-solid fa-pencil"></i>Color
+            <input type="color" class="btn-color__picker"></input>
+          </button>
+          <button class="btn btn-random" data-mode="random" type="button">
+            <i class="btn__icon fa-solid fa-rainbow"></i>Random
+          </button>
+          <button class="btn btn-darken" data-mode="darken" type="button">
+            <i class="btn__icon fa-solid fa-moon"></i>Darken
+          </button>
+          <button class="btn btn-lighten" data-mode="lighten" type="button">
+            <i class="btn__icon fa-solid fa-sun"></i>Lighten
+          </button>
+          <button class="btn btn-eraser" data-mode="eraser" type="button">
+            <i class="btn__icon fa-solid fa-eraser"></i>Eraser
+          </button>
+        </fieldset>
+        <fieldset class="controls__group general">
+          <legend class="controls__title">GENERAL</legend>
+          <button class="btn btn-clear" type="button">
+            <i class="btn__icon fa-solid fa-delete-left"></i>Clear
+          </button>
+          <button class="btn btn-gridlines" type="button">
+            <i class="btn__icon fa-solid fa-table-cells"></i>Grid: <span class="btn-gridlines__status-text"></span>
+          </button>
+          <button class="btn btn-size" type="button">
+            <input type="range" id="size" name="size" class="btn-size__slider" min="1" max="64"></input>
+            <label for="size" class="btn-size__label"></label>
+          </button>
+        </fieldset>
+      </div>
+      <div class="toy">
+        <h1 class="toy__title">Etch a Sketch</h1>
+        <div class="grid"></div>
+        <div class="knobs">
+          <div class="knob knob--left"></div>
+          <div class="knob knob--right"></div>  
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <p class="footer__text">Copyright &copy; 2023 by
+        <a class="footer__link" href="https://github.com/yingalice" target="_blank">yingalice</a>
+        <i class="fa-brands fa-github"></i>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
