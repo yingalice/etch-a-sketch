@@ -74,6 +74,7 @@ body {
 }
 
 .btn-color__picker,
+.btn-brush-size__label,
 .btn-size__label {
   display: block;
 }
@@ -115,20 +116,20 @@ body {
   border: 0.1px solid darkgrey;
 }
 
-.grid__cell--top-left {
+.grid__cell--corner-top-left {
   border-top-left-radius: 6px;
 }
 
-.grid__cell--top-right {
+.grid__cell--corner-top-right {
   border-top-right-radius: 6px;
 }
 
-.grid__cell--bottom-left {
-  border-bottom-left-radius: 6px;
+.grid__cell--corner-bottom-right {
+  border-bottom-right-radius: 6px;
 }
 
-.grid__cell--bottom-right {
-  border-bottom-right-radius: 6px;
+.grid__cell--corner-bottom-left {
+  border-bottom-left-radius: 6px;
 }
 
 .knob {

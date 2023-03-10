@@ -42,10 +42,14 @@
             <i class="btn__icon fa-solid fa-delete-left"></i>Clear
           </button>
           <button class="btn btn-gridlines" type="button">
-            <i class="btn__icon fa-solid fa-table-cells"></i>Grid: <span class="btn-gridlines__status-text"></span>
+            <i class="btn__icon fa-solid fa-table-cells"></i>Gridlines: <span class="btn-gridlines__status-text"></span>
+          </button>
+          <button class="btn btn-brush-size" type="button">
+            <input type="range" id="brush-size" name="brush-size" class="btn-brush-size__slider" min="0" max="50"></input>
+            <label for="brush-size" class="btn-brush-size__label"></label>
           </button>
           <button class="btn btn-size" type="button">
-            <input type="range" id="size" name="size" class="btn-size__slider" min="1" max="64"></input>
+            <input type="range" id="size" name="size" class="btn-size__slider" min="1" max="100"></input>
             <label for="size" class="btn-size__label"></label>
           </button>
         </fieldset>
