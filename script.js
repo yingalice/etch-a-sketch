@@ -13,9 +13,14 @@ let size = DEFAULT_SIZE;
 let hasGridlines = DEFAULT_GRIDLINES;
 let isMouseDown = false;
 let cells = [];
+let historyBuffer = [];
+let historyUndo = [];
+let historyRedo = [];
 
 const modes = document.querySelector('.modes');
 const btnClear = document.querySelector('.btn-clear');
+const btnUndo = document.querySelector('.btn-undo');
+const btnRedo = document.querySelector('.btn-redo');
 const btnGridlines = document.querySelector('.btn-gridlines');
 const colorPicker = document.querySelector('.btn-color__picker');
 const brushSizeSlider = document.querySelector('.btn-brush-size__slider');
@@ -24,6 +29,8 @@ const grid = document.querySelector('.grid');
 
 modes.addEventListener('click', setMode);
 btnClear.addEventListener('click', clearGrid);
+btnUndo.addEventListener('click', undo);
+btnRedo.addEventListener('click', redo);
 btnGridlines.addEventListener('click', updateGridlines);
 brushSizeSlider.addEventListener('input', updateBrushSize);
 sizeSlider.addEventListener('input', updateSizeLabel);
@@ -34,12 +41,14 @@ grid.addEventListener('mouseover', addOutline);
 grid.addEventListener('mouseout', removeOutline);
 document.addEventListener('mousedown', () => isMouseDown = true);
 document.addEventListener('mouseup', () => isMouseDown = false);
+document.addEventListener('mouseup', saveHistory);
     
 colorPicker.value = color;
 brushSizeSlider.value = brushSize;
 sizeSlider.value = size;
 
 setMode();
+clearGrid();
 createGrid();
 
 function setMode(e) {
@@ -99,6 +108,7 @@ function clearGrid() {
   for (const cell of grid.children) {
     cell.style.backgroundColor = '';
   }
+  clearHistory();
 }
 
 function draw(e) {
@@ -108,13 +118,34 @@ function draw(e) {
   // Color cells according the chosen mode
   const selection = getDrawArea(e.target);
   selection.forEach((cell) => {
+    let oldColor = getComputedStyle(cell).backgroundColor;
+
     color = (mode === 'color') ? colorPicker.value :
             (mode === 'random') ? getRandomColor() :
             (mode === 'darken') ? getShadingColor(cell, -20) :
             (mode === 'lighten') ? getShadingColor(cell, 20) :
             '';
-    cell.style.backgroundColor = color;  
+    
+    // The same cell may be painted multiple times in a single brushstroke
+    // Only save the most recent one in history so the undo/redo logic works correctly
+    cell.style.backgroundColor = color; 
+    const idx = historyBuffer.findIndex(item => item.div === cell);
+
+    let originalColor = '';
+    if (idx >= 0) {
+      originalColor = historyBuffer[idx].oldColor;
+      historyBuffer.splice(idx, 1);  // delete prior history if cell was already painted this round
+    }
+    historyBuffer.push({
+      div: cell,
+      oldColor: originalColor || oldColor,
+      newColor: color
+    });
   });
+
+  historyRedo = [];
+  enableButton(btnUndo);
+  disableButton(btnRedo);
 }
 
 function getDrawArea(middleCell) {
@@ -302,6 +333,63 @@ function updateSizeLabel(e) {
   const sizeLabel = document.querySelector('.btn-size__label');
   if (e) size = Number(e.target.value);
   sizeLabel.textContent = `Grid Size: ${size} x ${size}`;
+}
+
+function saveHistory() {
+  // Empty the history buffer into the master history array with each brushstroke
+  // Each buffer entry contains all the actions taken under a single brushstroke
+  // Example: If you paint 20 cells in one go, undo/redo acts on all 20 cells
+  // Master history stores up to 25 entries
+  if (historyBuffer.length) {
+    if (historyUndo.length >= 25) {
+      historyUndo.shift();
+    }
+    historyUndo = [...historyUndo, [...historyBuffer]];
+    historyBuffer = [];
+  }
+}
+
+function undo() {
+  const lastAction = historyUndo.pop();
+  historyRedo = [...historyRedo, lastAction];
+  
+  lastAction.forEach(action => {
+    action.div.style.backgroundColor = action.oldColor;
+  });
+  
+  if (!historyUndo.length) disableButton(btnUndo);
+  enableButton(btnRedo);
+}
+
+function redo() {
+  const lastAction = historyRedo.pop();
+  historyUndo = [...historyUndo, lastAction];
+  
+  lastAction.forEach(action => {
+    action.div.style.backgroundColor = action.newColor;
+  });
+
+  if (!historyRedo.length) disableButton(btnRedo);
+  enableButton(btnUndo);
+}
+
+function clearHistory() {
+  historyBuffer = [];
+  historyUndo = [];
+  historyRedo = [];
+
+  disableButton(btnUndo);
+  disableButton(btnRedo);
+}
+
+function disableButton(button) {
+  button.disabled = true;
+  button.classList.add('btn--disabled');
+}
+
+function enableButton(button) {
+  button.disabled = false;
+  button.classList.remove('btn--disabled');
 }
 
 function addRoundedCorners() {

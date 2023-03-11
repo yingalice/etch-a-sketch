@@ -58,14 +58,20 @@ body {
   transition: 0.2s ease-in-out;
 }
 
-.btn:hover,
+.btn--disabled {
+  color: gray;
+  background-color: lightgray;
+  cursor: default;
+}
+
+.btn:hover:not(.btn--disabled),
 .btn--selected {
   color: white;
   border-color: white;
   background-color: var(--color-navy-blue);
 }
 
-.btn:active {
+.btn:active:not(.btn--disabled) {
   background-color: var(--color-stone-blue);
 }
 
@@ -82,6 +88,10 @@ body {
 .btn-color__picker {
   margin: 0.25rem auto 0;
   width: 80%;
+}
+
+.undoredo {
+  display: flex;
 }
 
 .toy {

@@ -18,7 +18,7 @@
     <main class="main">
       <div class="controls">
         <fieldset class="controls__group modes">
-          <legend class="controls__title">MODES</legend>
+          <legend class="controls__title">Modes</legend>
           <button class="btn btn-color" data-mode="color" type="button">
             <i class="btn__icon fa-solid fa-pencil"></i>Color
             <input type="color" class="btn-color__picker"></input>
@@ -36,13 +36,24 @@
             <i class="btn__icon fa-solid fa-eraser"></i>Eraser
           </button>
         </fieldset>
-        <fieldset class="controls__group general">
-          <legend class="controls__title">GENERAL</legend>
+        <fieldset class="controls__group corrections">
+          <legend class="controls__title">Corrections</legend>
           <button class="btn btn-clear" type="button">
             <i class="btn__icon fa-solid fa-delete-left"></i>Clear
           </button>
+          <div class="undoredo">
+            <button class="btn btn-undo" type="button">
+              <i class="btn__icon fa-solid fa-rotate-left"></i>Undo
+            </button>
+            <button class="btn btn-redo" type="button">
+              <i class="btn__icon fa-solid fa-rotate-right"></i>Redo
+            </button>
+          </div>
+        </fieldset>
+        <fieldset class="controls__group settings">
+          <legend class="controls__title">Settings</legend>
           <button class="btn btn-gridlines" type="button">
-            <i class="btn__icon fa-solid fa-table-cells"></i>Gridlines: <span class="btn-gridlines__status-text"></span>
+            <i class="btn__icon fa-solid fa-border-none"></i>Gridlines: <span class="btn-gridlines__status-text"></span>
           </button>
           <button class="btn btn-brush-size" type="button">
             <input type="range" id="brush-size" name="brush-size" class="btn-brush-size__slider" min="0" max="50"></input>
