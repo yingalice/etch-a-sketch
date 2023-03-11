@@ -38,9 +38,6 @@
         </fieldset>
         <fieldset class="controls__group corrections">
           <legend class="controls__title">Corrections</legend>
-          <button class="btn btn-clear" type="button">
-            <i class="btn__icon fa-solid fa-delete-left"></i>Clear
-          </button>
           <div class="undoredo">
             <button class="btn btn-undo" type="button">
               <i class="btn__icon fa-solid fa-rotate-left"></i>Undo
@@ -49,12 +46,12 @@
               <i class="btn__icon fa-solid fa-rotate-right"></i>Redo
             </button>
           </div>
+          <button class="btn btn-clear" type="button">
+            <i class="btn__icon fa-solid fa-delete-left"></i>Clear
+          </button>
         </fieldset>
         <fieldset class="controls__group settings">
           <legend class="controls__title">Settings</legend>
-          <button class="btn btn-gridlines" type="button">
-            <i class="btn__icon fa-solid fa-border-none"></i>Gridlines: <span class="btn-gridlines__status-text"></span>
-          </button>
           <button class="btn btn-brush-size" type="button">
             <input type="range" id="brush-size" name="brush-size" class="btn-brush-size__slider" min="0" max="50"></input>
             <label for="brush-size" class="btn-brush-size__label"></label>
@@ -62,6 +59,9 @@
           <button class="btn btn-size" type="button">
             <input type="range" id="size" name="size" class="btn-size__slider" min="1" max="100"></input>
             <label for="size" class="btn-size__label"></label>
+          </button>
+          <button class="btn btn-gridlines" type="button">
+            <i class="btn__icon fa-solid fa-border-none"></i>Gridlines: <span class="btn-gridlines__status-text"></span>
           </button>
         </fieldset>
       </div>

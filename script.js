@@ -107,6 +107,7 @@ function createGrid() {
 function clearGrid() {
   for (const cell of grid.children) {
     cell.style.backgroundColor = '';
+    cell.style.border = '';
   }
   clearHistory();
 }

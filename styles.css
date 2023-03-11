@@ -64,7 +64,6 @@ body {
   cursor: default;
 }
 
-.btn:hover:not(.btn--disabled),
 .btn--selected {
   color: white;
   border-color: white;
@@ -90,8 +89,14 @@ body {
   width: 80%;
 }
 
+.btn-brush-size__slider,
+.btn-size__slider {
+  width: 100%;
+}
+
 .undoredo {
   display: flex;
+  width: 100%;
 }
 
 .toy {
@@ -113,8 +118,8 @@ body {
   display: grid;
   border: 2px solid darkgrey;
   border-radius: var(--border-radius-rounded);
-  width: 65vmin;
-  height: 65vmin;
+  width: 60vmin;
+  height: 60vmin;
   cursor: crosshair;
 }
 
@@ -172,4 +177,62 @@ body {
 
 .footer__link:hover {
   color: lightblue;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(.btn--disabled) {
+    color: white;
+    border-color: white;
+    background-color: var(--color-navy-blue);
+  }
+}
+
+@media (max-width: 992px) {
+  .main {
+    flex-direction: column-reverse;
+  }
+
+  .controls__group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    flex: 1;
+  }
+
+  /* force line break within flexbox by creating psuedo-elements
+     that span 100%, and setting order */
+  .modes::before,
+  .modes::after,
+  .corrections::before,
+  .settings::before {
+    content: '';
+    width: 100%;
+    order: 1;
+  }
+
+  .modes .btn:not(:last-child) {
+    min-height: 3.5rem;
+  }
+
+  .modes .btn:nth-of-type(n + 3) {
+    order: 1;
+  }
+
+  .modes .btn:nth-of-type(n + 5) {
+    order: 2;
+  }
+
+  .modes .btn:last-of-type {
+    order: 3;
+  }
+
+  .corrections > .btn:last-child {
+    order: 1;
+  }
+
+  .settings .btn:nth-of-type(n + 3) {
+    order: 1;
+  }
 }
