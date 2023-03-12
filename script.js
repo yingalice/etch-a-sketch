@@ -37,12 +37,14 @@ sizeSlider.addEventListener('input', updateSizeLabel);
 sizeSlider.addEventListener('change', resizeGrid);
 grid.addEventListener('mouseover', draw);
 grid.addEventListener('mousedown', draw);
+grid.addEventListener('touchmove', draw);
 grid.addEventListener('mouseover', addOutline);
 grid.addEventListener('mouseout', removeOutline);
 document.addEventListener('mousedown', () => isMouseDown = true);
 document.addEventListener('mouseup', () => isMouseDown = false);
 document.addEventListener('mouseup', saveHistory);
-    
+document.addEventListener('touchend', saveHistory);
+
 colorPicker.value = color;
 brushSizeSlider.value = brushSize;
 sizeSlider.value = size;
@@ -113,11 +115,19 @@ function clearGrid() {
 }
 
 function draw(e) {
+  // e.target is different for mouseover vs touchmove events
+  // mouseover returns the cell the mouse is currently over (changes as you move - desired behavior), while
+  // touchmove returns the cell that was first touched (does not change as you move)
+  // For touchmove, use elementFromPoint instead
+  const target = (!e.touches) ? e.target :
+                 document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+
+  if (!target) return;
   if (e.type === 'mouseover' && !isMouseDown) return;
-  if (!e.target.classList.contains('grid__cell')) return;
+  if (!target.classList.contains('grid__cell')) return;
 
   // Color cells according the chosen mode
-  const selection = getDrawArea(e.target);
+  const selection = getDrawArea(target);
   selection.forEach((cell) => {
     let oldColor = getComputedStyle(cell).backgroundColor;
 
@@ -200,10 +210,9 @@ function addOutline(e) {
   // Add borders with different color schemes depending on the selected mode
   // Color mode = border color matches color picker
   // Random mode = rainbow border (each border is a random color)
-
   if (!e.target.classList.contains('grid__cell')) return;
   const selection = getOutlineArea(e.target);
-
+  
   selection.forEach(item => {
     const side = item.side;
     const cell = item.div;
