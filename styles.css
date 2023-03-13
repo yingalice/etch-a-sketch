@@ -80,8 +80,8 @@ body {
 }
 
 .btn-color__picker,
-.btn-brush-size__label,
-.btn-size__label {
+.btn-brush-size__slider,
+.btn-size__slider {
   display: block;
 }
 
@@ -210,7 +210,7 @@ body {
     order: 1;
   }
 
-  .modes .btn:not(:last-child) {
+  .modes .btn:not(:last-of-type) {
     min-height: 3.5rem;
   }
 
@@ -218,15 +218,11 @@ body {
     order: 1;
   }
 
-  .modes .btn:nth-of-type(n + 5) {
+  .modes .btn:last-of-type {
     order: 2;
   }
 
-  .modes .btn:last-of-type {
-    order: 3;
-  }
-
-  .corrections > .btn:last-child {
+  .corrections > .btn:last-of-type {
     order: 1;
   }
 

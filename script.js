@@ -38,6 +38,7 @@ sizeSlider.addEventListener('change', resizeGrid);
 grid.addEventListener('mouseover', draw);
 grid.addEventListener('mousedown', draw);
 grid.addEventListener('touchmove', draw);
+grid.addEventListener('touchstart', draw);
 grid.addEventListener('mouseover', addOutline);
 grid.addEventListener('mouseout', removeOutline);
 document.addEventListener('mousedown', () => isMouseDown = true);
@@ -87,7 +88,7 @@ function createGrid() {
     cell.classList.add('grid__cell');
     grid.appendChild(cell);
     
-    // Track each cell (row, col, div) in an array of objects
+    // Track each cell {row, col, div} in cells array
     cells.push({
       row: row,
       col: col++,
@@ -125,28 +126,40 @@ function draw(e) {
   if (!target) return;
   if (e.type === 'mouseover' && !isMouseDown) return;
   if (!target.classList.contains('grid__cell')) return;
-
-  // Color cells according the chosen mode
   const selection = getDrawArea(target);
+
+  // On touch devices, darken and lighten modes go to the maximum or minimum
+  // shade too quickly, because it updates with every little movement
+  // Don't paint the same cells back-to-back in the same brush stroke
+  // If the last n cells (n = # of cells for this brush size) in history match
+  // the cells you're trying to paint, then exit
+  if (historyBuffer.length) {
+    let brushSizeCells = Math.pow(brushSize * 2 + 1, 2);  // # of cells for this brush size
+    let lastCellsPainted = historyBuffer.slice(-brushSizeCells);  // all cells painted from most recent draw()
+    let allCellsMatch = lastCellsPainted.every(item => selection.includes(item.div));  // check if same cells are being painted back-to-back
+    if (allCellsMatch) return;
+  }
+ 
+  // Color cells according the chosen mode
   selection.forEach((cell) => {
     let oldColor = getComputedStyle(cell).backgroundColor;
-
     color = (mode === 'color') ? colorPicker.value :
             (mode === 'random') ? getRandomColor() :
             (mode === 'darken') ? getShadingColor(cell, -20) :
             (mode === 'lighten') ? getShadingColor(cell, 20) :
             '';
     
-    // The same cell may be painted multiple times in a single brushstroke
+    // The same cell may be painted over multiple times in a single brushstroke
     // Only save the most recent one in history so the undo/redo logic works correctly
     cell.style.backgroundColor = color; 
     const idx = historyBuffer.findIndex(item => item.div === cell);
-
     let originalColor = '';
+
     if (idx >= 0) {
       originalColor = historyBuffer[idx].oldColor;
-      historyBuffer.splice(idx, 1);  // delete prior history if cell was already painted this round
+      historyBuffer.splice(idx, 1);  // delete prior history for this cell
     }
+
     historyBuffer.push({
       div: cell,
       oldColor: originalColor || oldColor,
@@ -175,7 +188,7 @@ function getDrawArea(middleCell) {
     }
   }
 
-  return selection;
+  return selection;  // divs
 }
 
 function getRandomColor() {
