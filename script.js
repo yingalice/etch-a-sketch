@@ -35,16 +35,13 @@ btnGridlines.addEventListener('click', updateGridlines);
 brushSizeSlider.addEventListener('input', updateBrushSize);
 sizeSlider.addEventListener('input', updateSizeLabel);
 sizeSlider.addEventListener('change', resizeGrid);
-grid.addEventListener('mouseover', draw);
-grid.addEventListener('mousedown', draw);
-grid.addEventListener('touchmove', draw);
-grid.addEventListener('touchstart', draw);
+grid.addEventListener('pointermove', draw);
+grid.addEventListener('pointerdown', draw);
 grid.addEventListener('mouseover', addOutline);
 grid.addEventListener('mouseout', removeOutline);
 document.addEventListener('mousedown', () => isMouseDown = true);
 document.addEventListener('mouseup', () => isMouseDown = false);
-document.addEventListener('mouseup', saveHistory);
-document.addEventListener('touchend', saveHistory);
+document.addEventListener('pointerup', saveHistory);
 
 colorPicker.value = color;
 brushSizeSlider.value = brushSize;
@@ -116,23 +113,26 @@ function clearGrid() {
 }
 
 function draw(e) {
-  // e.target is different for mouseover vs touchmove events
-  // mouseover returns the cell the mouse is currently over (changes as you move - desired behavior), while
-  // touchmove returns the cell that was first touched (does not change as you move)
-  // For touchmove, use elementFromPoint instead
-  const target = (!e.touches) ? e.target :
-                 document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+  // e.target is different for mouse vs touch pointermove events
+  // mouse - returns the cell the mouse is currently over (changes as you move - desired)
+  // touch - returns the cell that was first touched (doesn't change as you move - undesired)
+  // For touch, use elementFromPoint instead of e.target to get the current cell
+  const target = (e.pointerType === 'mouse') ? e.target :
+                 document.elementFromPoint(e.x, e.y);
 
   if (!target) return;
-  if (e.type === 'mouseover' && !isMouseDown) return;
+  if (e.type === 'pointermove' && e.pointerType === 'mouse' && !isMouseDown) return;
   if (!target.classList.contains('grid__cell')) return;
-  const selection = getDrawArea(target);
+
+  // Prevent sticky hover outline on touch device
+  if (e.type === 'pointerdown' && e.pointerType === 'touch') removeOutline();
 
   // On touch devices, darken and lighten modes go to the maximum or minimum
   // shade too quickly, because it updates with every little movement
   // Don't paint the same cells back-to-back in the same brush stroke
   // If the last n cells (n = # of cells for this brush size) in history match
   // the cells you're trying to paint, then exit
+  const selection = getDrawArea(target);
   if (historyBuffer.length) {
     let brushSizeCells = Math.pow(brushSize * 2 + 1, 2);  // # of cells for this brush size
     let lastCellsPainted = historyBuffer.slice(-brushSizeCells);  // all cells painted from most recent draw()
