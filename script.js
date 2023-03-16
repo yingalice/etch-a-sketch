@@ -1,26 +1,21 @@
 'use strict'
 
-const DEFAULT_MODE = 'color';
-const DEFAULT_COLOR = '#505050';
-const DEFAULT_BRUSH_SIZE = 0;
-const DEFAULT_SIZE = 20;
-const DEFAULT_GRIDLINES = true;
-
-let mode = DEFAULT_MODE;
-let color = DEFAULT_COLOR;
-let brushSize = DEFAULT_BRUSH_SIZE;
-let size = DEFAULT_SIZE;
-let hasGridlines = DEFAULT_GRIDLINES;
+let mode = 'color';
+let color = '#505050';
+let brushSize = 0;
+let size = 20;
+let hasGridlines = true;
 let isMouseDown = false;
+
 let cells = [];
 let historyBuffer = [];
 let historyUndo = [];
 let historyRedo = [];
 
 const modes = document.querySelector('.modes');
-const btnClear = document.querySelector('.btn-clear');
 const btnUndo = document.querySelector('.btn-undo');
 const btnRedo = document.querySelector('.btn-redo');
+const btnClear = document.querySelector('.btn-clear');
 const btnGridlines = document.querySelector('.btn-gridlines');
 const colorPicker = document.querySelector('.btn-color__picker');
 const brushSizeSlider = document.querySelector('.btn-brush-size__slider');
@@ -28,44 +23,46 @@ const sizeSlider = document.querySelector('.btn-size__slider');
 const grid = document.querySelector('.grid');
 
 modes.addEventListener('click', setMode);
-btnClear.addEventListener('click', clearGrid);
 btnUndo.addEventListener('click', undo);
 btnRedo.addEventListener('click', redo);
+btnClear.addEventListener('click', clearGrid);
 btnGridlines.addEventListener('click', updateGridlines);
 brushSizeSlider.addEventListener('input', updateBrushSize);
 sizeSlider.addEventListener('input', updateSizeLabel);
 sizeSlider.addEventListener('change', resizeGrid);
-grid.addEventListener('pointermove', draw);
 grid.addEventListener('pointerdown', draw);
+grid.addEventListener('pointermove', draw);
 grid.addEventListener('mouseover', addOutline);
 grid.addEventListener('mouseout', removeOutline);
 document.addEventListener('mousedown', () => isMouseDown = true);
 document.addEventListener('mouseup', () => isMouseDown = false);
 document.addEventListener('pointerup', saveHistory);
 
-colorPicker.value = color;
-brushSizeSlider.value = brushSize;
-sizeSlider.value = size;
+initialSetup();
 
-setMode();
-clearGrid();
-createGrid();
+function initialSetup() {
+  colorPicker.value = color;
+  brushSizeSlider.value = brushSize;
+  sizeSlider.value = size;
+  
+  setMode();
+  updateBrushSize();
+  updateSizeLabel();
+  createGrid();  
+}
 
 function setMode(e) {
-  // Only 1 mode button can be selected (highlighted)
-  // Starts with color button selected by default
-  // Clicking color picker selects its parent button
-  // Clicking any other non-button in the modes section is ignored
-  let nearestButton = (e) ? e.target.closest('button[data-mode]') :
-                      modes.querySelector(`button[data-mode="${mode}"]`);
-  if (!nearestButton) return;
-  mode = nearestButton.dataset.mode;
+  // Only 1 mode button can be selected (highlighted) at a time
+  // Clicking anywhere within a button selects it (ie. color picker or icon)
+  // Clicking other non-buttons are ignored (ie. space between buttons)
+  const modeButton = (e) ? e.target.closest('.btn[data-mode]') :
+                     modes.querySelector(`.btn[data-mode="${mode}"]`);
+  if (!modeButton) return;
+  mode = modeButton.dataset.mode;
   
-  const buttons = modes.querySelectorAll('button[data-mode]');
-  for (const button of buttons) {
-    button.classList.remove('btn--selected');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-  }
-  nearestButton.classList.add('btn--selected');
+  const selectedButton = modes.querySelector('.btn--selected');
+  if (selectedButton) selectedButton.classList.remove('btn--selected');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+  modeButton.classList.add('btn--selected');
 }
 
 function createGrid() {
@@ -99,71 +96,69 @@ function createGrid() {
   }
 
   updateGridlines();
-  updateBrushSize();
-  updateSizeLabel();
   addRoundedCorners();
 }
 
 function clearGrid() {
   for (const cell of grid.children) {
     cell.style.backgroundColor = '';
-    cell.style.border = '';
   }
   clearHistory();
 }
 
 function draw(e) {
-  // e.target is different for mouse vs touch pointermove events
-  // mouse - returns the cell the mouse is currently over (changes as you move - desired)
-  // touch - returns the cell that was first touched (doesn't change as you move - undesired)
-  // For touch, use elementFromPoint instead of e.target to get the current cell
+  // Paint the cells and write it to historyBuffer
+
+  // e.target behaves differently for mouse vs touch pointermove events
+  //   mouse - returns the cell the mouse is currently over (changes as you move - desired)
+  //   touch - returns the cell that was first touched (doesn't change as you move - undesired)
+  // For touch, use elementFromPoint instead of e.target to track cell movement
   const target = (e.pointerType === 'mouse') ? e.target :
                  document.elementFromPoint(e.x, e.y);
 
-  if (!target) return;
   if (e.type === 'pointermove' && e.pointerType === 'mouse' && !isMouseDown) return;
   if (!target.classList.contains('grid__cell')) return;
+  if (!target) return;
 
-  // Prevent sticky hover outline on touch device
+  // Prevent sticky hover outline on touch devices
   if (e.type === 'pointerdown' && e.pointerType === 'touch') removeOutline();
 
-  // On touch devices, darken and lighten modes go to the maximum or minimum
-  // shade too quickly, because it updates with every little movement
-  // Don't paint the same cells back-to-back in the same brush stroke
+  // On touch devices, darken and lighten modes go to the maximum shade
+  // too quickly, because it updates with every movement
+  // Don't allow painting the same cells back-to-back in the same brush stroke
   // If the last n cells (n = # of cells for this brush size) in history match
-  // the cells you're trying to paint, then exit
-  const selection = getDrawArea(target);
+  // the cells you're currently trying to paint, then exit
+  const drawArea = getDrawArea(target);
   if (historyBuffer.length) {
-    let brushSizeCells = Math.pow(brushSize * 2 + 1, 2);  // # of cells for this brush size
-    let lastCellsPainted = historyBuffer.slice(-brushSizeCells);  // all cells painted from most recent draw()
-    let allCellsMatch = lastCellsPainted.every(item => selection.includes(item.div));  // check if same cells are being painted back-to-back
-    if (allCellsMatch) return;
+    const numCellsInBrush = Math.pow(brushSize * 2 + 1, 2);
+    const lastCellsPainted = historyBuffer.slice(-numCellsInBrush);
+    const isMatch = lastCellsPainted.every(historyItem => drawArea.includes(historyItem.div));
+    if (isMatch) return;
   }
  
-  // Color cells according the chosen mode
-  selection.forEach((cell) => {
+  drawArea.forEach(cell => {
+    // Paint cells according the chosen mode
     let oldColor = getComputedStyle(cell).backgroundColor;
     color = (mode === 'color') ? colorPicker.value :
             (mode === 'random') ? getRandomColor() :
             (mode === 'darken') ? getShadingColor(cell, -20) :
             (mode === 'lighten') ? getShadingColor(cell, 20) :
             '';
+    cell.style.backgroundColor = color;
     
     // The same cell may be painted over multiple times in a single brushstroke
     // Only save the most recent one in history so the undo/redo logic works correctly
-    cell.style.backgroundColor = color; 
-    const idx = historyBuffer.findIndex(item => item.div === cell);
-    let originalColor = '';
-
+    const idx = historyBuffer.findIndex(historyItem => historyItem.div === cell);
     if (idx >= 0) {
-      originalColor = historyBuffer[idx].oldColor;
+      oldColor = historyBuffer[idx].oldColor;
       historyBuffer.splice(idx, 1);  // delete prior history for this cell
     }
 
+    // Store each {div, oldColor, newColor} in history for undo/redo
     historyBuffer.push({
-      div: cell,
-      oldColor: originalColor || oldColor,
-      newColor: color
+      oldColor: oldColor,
+      newColor: color,
+      div: cell
     });
   });
 
@@ -174,82 +169,73 @@ function draw(e) {
 
 function getDrawArea(middleCell) {
   // Returns all cells that need to be painted based on the brush size
-  const cell = cells.find(item => item.div === middleCell);
-  let selection = [];
-  let rowMin = clampEdges(cell.row - brushSize);
-  let rowMax = clampEdges(cell.row + brushSize);
-  let colMin = clampEdges(cell.col - brushSize);
-  let colMax = clampEdges(cell.col + brushSize);
+  // If it goes beyond the edges, crop accordingly
+  const cell = cells.find(cellItem => cellItem.div === middleCell);
+  const rowMin = clampEdges(cell.row - brushSize);
+  const rowMax = clampEdges(cell.row + brushSize);
+  const colMin = clampEdges(cell.col - brushSize);
+  const colMax = clampEdges(cell.col + brushSize);
+  const drawArea = [];
 
   for (let row = rowMin; row <= rowMax; row++) {
     for (let col = colMin; col <= colMax; col++) {
-      let div = findCellByRowCol(row, col);
-      selection.push(div);
+      const div = findCellByRowCol(row, col);
+      drawArea.push(div);
     }
   }
 
-  return selection;  // divs
+  return drawArea;
 }
 
 function getRandomColor() {
   // Returns random color in RGB format
   // Each of the 3 colors ranges from 0 to 255
-
-  let rgbArr = [];
+  const rgbArr = [];
   for (let i = 0; i < 3; i++) {
     rgbArr.push(Math.floor(Math.random() * 256));
   }
+
   return `rgb(${rgbArr})`;
 }
 
 function getShadingColor(cell, increment) {
-  // To lighten or darken cell, add or subtract the same number from each RGB value
-  // Each of the 3 colors ranges from 0 to 211
+  // Returns new shade in RGB format
+  // To lighten or darken, add or subtract the same number from each RGB value
+  // Each of the 3 colors ranges from 0 to 211 (not 255)
 
-  const min = 0;    // Darkest = black RGB(0, 0, 0)
-  const max = 211;  // Lightest = lightgray grid background RGB(211, 211, 211)
+  const min = 0;    // Darkest = black, RGB(0, 0, 0)
+  const max = 211;  // Lightest = lightgray grid background, RGB(211, 211, 211)
   const currentColor = getComputedStyle(cell).backgroundColor;
-  const rgbArr = currentColor.slice(4, currentColor.length - 1).replace(/ /g, '').split(',');
-
-  rgbArr.forEach((individualColor, i, arr) => {
-    individualColor = Number(individualColor) + increment;
-    arr[i] = Math.min(Math.max(individualColor, min), max);
+  const currentColorParsed = currentColor.slice(4, currentColor.length - 1).replace(/ /g, '').split(',');
+  const rgbArr = currentColorParsed.map(individualColor => {
+    const newColor = Number(individualColor) + increment;
+    return Math.min(Math.max(newColor, min), max);
   });
 
   return `rgb(${rgbArr})`;
 }
 
 function addOutline(e) {
-  // Add borders with different color schemes depending on the selected mode
+  // Add borders for the hover outline with mode-dependent color schemes
   // Color mode = border color matches color picker
   // Random mode = rainbow border (each border is a random color)
   if (!e.target.classList.contains('grid__cell')) return;
-  const selection = getOutlineArea(e.target);
   
-  selection.forEach(item => {
-    const side = item.side;
-    const cell = item.div;
+  const outlineArea = getOutlineArea(e.target);
+  const borderWidthStyle = getComputedStyle(grid).getPropertyValue('--border-outline');
 
-    let borderColor;
-    switch (mode) {
-      case "color":
-        borderColor = colorPicker.value;
-        break;
-      case "random":
-        borderColor = getRandomColor();
-        break;
-      case "darken":
-        borderColor = "black";
-        break;
-      case "lighten":
-        borderColor = "gray";
-        break;  
-      case "eraser":
-        borderColor = "white";
-        break;
-    }
+  outlineArea.forEach(outlineItem => {
+    const side = outlineItem.borderSide;
+    const cell = outlineItem.div;
+
+    const borderColor = (mode === 'color') ? colorPicker.value :
+                        (mode === 'random') ? getRandomColor() :
+                        (mode === 'darken') ? 'black' :
+                        (mode === 'lighten') ? 'darkgray' :
+                        (mode === 'eraser') ? 'white' :
+                        '';
   
-    const border = `3px double ${borderColor}`;
+    const border = `${borderWidthStyle} ${borderColor}`;
     switch (side) {
       case "top":
         cell.style.borderTop = border;
@@ -270,43 +256,44 @@ function addOutline(e) {
 }
 
 function getOutlineArea(middleCell) {
+  // Returns {borderSide, div} for each cell that makes up the hover outline
+  // Outline area is based on the brush size
+  // If it goes beyond the edges, crop accordingly
   let row, col;
-  let selection = [];
-  const cell = cells.find(item => item.div === middleCell);
+  const outlineArea = [];
+  const cell = cells.find(cellItem => cellItem.div === middleCell);
 
-  // Returns the outline area based on the brush size
-  // (array containing each cell and border side)
   for (let i = -brushSize; i <= brushSize ; i++) {
     row = clampEdges(cell.row - brushSize);
     col = clampEdges(cell.col + i);
-    selection.push({
-      div: findCellByRowCol(row, col), 
-      side: "top"
+    outlineArea.push({
+      borderSide: "top",
+      div: findCellByRowCol(row, col)
     });
 
     row = clampEdges(cell.row + i);
     col = clampEdges(cell.col + brushSize);
-    selection.push({
-      div: findCellByRowCol(row, col), 
-      side: "right"
+    outlineArea.push({
+      borderSide: "right",
+      div: findCellByRowCol(row, col)
     });
 
     row = clampEdges(cell.row + brushSize);
     col = clampEdges(cell.col + i);
-    selection.push({
-      div: findCellByRowCol(row, col), 
-      side: "bottom"
+    outlineArea.push({
+      borderSide: "bottom",
+      div: findCellByRowCol(row, col)
     });
 
     row = clampEdges(cell.row + i);
     col = clampEdges(cell.col - brushSize);
-    selection.push({
-      div: findCellByRowCol(row, col), 
-      side: "left"
+    outlineArea.push({
+      borderSide: "left",
+      div: findCellByRowCol(row, col)
     });
   }
 
-  return selection;
+  return outlineArea;
 }
 
 function removeOutline() {
@@ -317,58 +304,48 @@ function removeOutline() {
   });
 }
 
-function updateGridlines(e) {
-  // Sets (1) gridlines (2) ON/OFF status
-  // Toggles when grid button is clicked, otherwise uses current setting
-  const gridlinesText = document.querySelector('.btn-gridlines__status-text');
-
-  if (e) hasGridlines = !hasGridlines;
-
-  for (const cell of grid.children) {
-    if (hasGridlines) {
-      gridlinesText.textContent = 'ON';
-      cell.classList.add('grid__cell--gridlines');
-    } else {
-      gridlinesText.textContent = 'OFF';
-      cell.classList.remove('grid__cell--gridlines');
-    }
-  }
+function resizeGrid() {
+  size = Number(sizeSlider.value);
+  updateBrushSize();
+  updateSizeLabel();
+  createGrid();
 }
 
-function updateBrushSize(e) {
-  if (e) brushSize = Number(e.target.value);
+function updateBrushSize() {
+  // If grid is resized smaller, then the previous brush size may be too big,
+  // and needs to be adjusted to the new maximum
+  // Maximum brush size is constrained by the grid size
   const brushSizeLabel = document.querySelector('.btn-brush-size__label');
-  
-  // Brush size is constrained by the grid size
-  const maxBrushSize = Math.ceil((size - 1) / 2);
+  const maxBrushSize = Math.floor(size / 2);
+
+  brushSize = Number(brushSizeSlider.value);
   brushSize = Math.min(brushSize, maxBrushSize);
   brushSizeSlider.setAttribute('max', maxBrushSize);
   brushSizeLabel.textContent = `Brush Size: ${brushSize}`;
 }
 
-function resizeGrid(e) {
-  size = Number(e.target.value);
-  clearGrid();
-  createGrid();
-}
-
-function updateSizeLabel(e) {
+function updateSizeLabel() {
   const sizeLabel = document.querySelector('.btn-size__label');
-  if (e) size = Number(e.target.value);
+
+  size = Number(sizeSlider.value);
   sizeLabel.textContent = `Grid Size: ${size} x ${size}`;
 }
 
-function saveHistory() {
-  // Empty the history buffer into the master history array with each brushstroke
-  // Each buffer entry contains all the actions taken under a single brushstroke
-  // Example: If you paint 20 cells in one go, undo/redo acts on all 20 cells
-  // Master history stores up to 25 entries
-  if (historyBuffer.length) {
-    if (historyUndo.length >= 25) {
-      historyUndo.shift();
+function updateGridlines(e) {
+  // Show or hide gridlines and update its ON/OFF label
+  // If gridline button was clicked, toggle the setting, otherwise 
+  // apply the current setting (ie. restore it upon resizing grid)
+  const gridlinesText = document.querySelector('.btn-gridlines__status-text');
+
+  if (e) hasGridlines = !hasGridlines;
+  gridlinesText.textContent = (hasGridlines) ? 'ON' : 'OFF';
+
+  for (const cell of grid.children) {
+    if (hasGridlines) {
+      cell.classList.add('grid__cell--gridlines');
+    } else {
+      cell.classList.remove('grid__cell--gridlines');
     }
-    historyUndo = [...historyUndo, [...historyBuffer]];
-    historyBuffer = [];
   }
 }
 
@@ -376,24 +353,37 @@ function undo() {
   const lastAction = historyUndo.pop();
   historyRedo = [...historyRedo, lastAction];
   
-  lastAction.forEach(action => {
-    action.div.style.backgroundColor = action.oldColor;
+  lastAction.forEach(undoItem => {
+    undoItem.div.style.backgroundColor = undoItem.oldColor;
   });
   
-  if (!historyUndo.length) disableButton(btnUndo);
   enableButton(btnRedo);
+  if (!historyUndo.length) disableButton(btnUndo);
 }
 
 function redo() {
   const lastAction = historyRedo.pop();
   historyUndo = [...historyUndo, lastAction];
   
-  lastAction.forEach(action => {
-    action.div.style.backgroundColor = action.newColor;
+  lastAction.forEach(redoItem => {
+    redoItem.div.style.backgroundColor = redoItem.newColor;
   });
 
-  if (!historyRedo.length) disableButton(btnRedo);
   enableButton(btnUndo);
+  if (!historyRedo.length) disableButton(btnRedo);
+}
+
+function saveHistory() {
+  // Empty temporary history buffer into master history after each brushstroke
+  // Master history stores up to 25 entries
+  // Ex: Painting 20 cells at once = stored as 1 entry, so undo/redo acts on all 20
+  if (historyBuffer.length) {
+    if (historyUndo.length >= 25) {
+      historyUndo.shift();
+    }
+    historyUndo = [...historyUndo, [...historyBuffer]];
+    historyBuffer = [];
+  }
 }
 
 function clearHistory() {
@@ -419,8 +409,8 @@ function addRoundedCorners() {
   // Calculate corner cell position (changes with grid size)
   const topLeftCell = document.querySelector(`.grid__cell:first-child`);
   const topRightCell = document.querySelector(`.grid__cell:nth-child(${size})`);
-  const btmLeftCell = document.querySelector(`.grid__cell:nth-child(${size * size - size + 1})`);
   const btmRightCell = document.querySelector(`.grid__cell:last-child`);
+  const btmLeftCell = document.querySelector(`.grid__cell:nth-child(${size * size - size + 1})`);
 
   topLeftCell.classList.add('grid__cell--corner-top-left');
   topRightCell.classList.add('grid__cell--corner-top-right');
@@ -429,11 +419,11 @@ function addRoundedCorners() {
 }
 
 function clampEdges(num) {
-  // Used in getDrawArea and getOutlineArea to ensure borders are cropped at the edges
-  // by restricting rows and columns to a value between 1 and the grid size
+  // Used in getDrawArea and getOutlineArea to ensure borders are cropped at the
+  // edges by restricting rows and columns to a value between 1 and grid size
   return Math.min(Math.max(num, 1), size);
 }
 
 function findCellByRowCol(row, col) {
-  return cells.find(item => item.row === row && item.col === col).div;
+  return cells.find(cellItem => cellItem.row === row && cellItem.col === col).div;
 }

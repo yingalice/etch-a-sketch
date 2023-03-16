@@ -1,5 +1,6 @@
 :root {
   --border-radius-rounded: 8px;
+  --border-outline: 3px double;
   --font-family-main: 'Montserrat Alternates', sans-serif;
   --font-family-logo: 'Rock Salt', cursive;
   --color-stone-blue: #243B55;
