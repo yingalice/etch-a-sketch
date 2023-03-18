@@ -6,6 +6,7 @@ let brushSize = 0;
 let size = 20;
 let hasGridlines = true;
 let isMouseDown = false;
+let prevNumCellsPainted = 0;
 
 let cells = [];
 let historyBuffer = [];
@@ -126,18 +127,17 @@ function draw(e) {
   if (e.type === 'pointerdown' && e.pointerType === 'touch') removeOutline();
 
   // On touch devices, darken and lighten modes go to the maximum shade
-  // too quickly, because it updates with every movement
+  // too quickly, because it updates with every little movement
   // Don't allow painting the same cells back-to-back in the same brush stroke
-  // If the last n cells (n = # of cells for this brush size) in history match
-  // the cells you're currently trying to paint, then exit
   const drawArea = getDrawArea(target);
-  if (historyBuffer.length) {
-    const numCellsInBrush = Math.pow(brushSize * 2 + 1, 2);
-    const lastCellsPainted = historyBuffer.slice(-numCellsInBrush);
+  const numCellsInDrawArea = drawArea.length;
+  if (numCellsInDrawArea === prevNumCellsPainted) {
+    const lastCellsPainted = historyBuffer.slice(-prevNumCellsPainted);
     const isMatch = lastCellsPainted.every(historyItem => drawArea.includes(historyItem.div));
     if (isMatch) return;
   }
- 
+  prevNumCellsPainted = numCellsInDrawArea;
+
   drawArea.forEach(cell => {
     // Paint cells according the chosen mode
     let oldColor = getComputedStyle(cell).backgroundColor;
@@ -373,6 +373,7 @@ function saveHistory() {
   // Master history stores up to 25 entries
   // Ex: Painting 20 cells at once = stored as 1 entry, so undo/redo acts on all 20
   if (historyBuffer.length) {
+    prevNumCellsPainted = 0;
     if (historyUndo.length >= 25) {
       historyUndo.shift();
     }
