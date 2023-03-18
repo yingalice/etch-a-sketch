@@ -29,7 +29,7 @@ btnClear.addEventListener('click', clearGrid);
 btnGridlines.addEventListener('click', updateGridlines);
 brushSizeSlider.addEventListener('input', updateBrushSize);
 sizeSlider.addEventListener('input', updateSizeLabel);
-sizeSlider.addEventListener('change', resizeGrid);
+sizeSlider.addEventListener('change', createGrid);
 grid.addEventListener('pointerdown', draw);
 grid.addEventListener('pointermove', draw);
 grid.addEventListener('mouseover', addOutline);
@@ -46,8 +46,6 @@ function initialSetup() {
   sizeSlider.value = size;
   
   setMode();
-  updateBrushSize();
-  updateSizeLabel();
   createGrid();  
 }
 
@@ -70,6 +68,10 @@ function createGrid() {
   let col = 1;
   cells = [];
   
+  clearHistory();
+  updateBrushSize();
+  updateSizeLabel();
+
   // Remove existing grid before creating a new one
   while(grid.firstChild) {
     grid.removeChild(grid.lastChild);
@@ -302,13 +304,6 @@ function removeOutline() {
     cell.classList.remove('grid__cell--outline');
     cell.style.border = ''
   });
-}
-
-function resizeGrid() {
-  size = Number(sizeSlider.value);
-  updateBrushSize();
-  updateSizeLabel();
-  createGrid();
 }
 
 function updateBrushSize() {
