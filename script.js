@@ -316,14 +316,16 @@ function updateBrushSize() {
   brushSize = Number(brushSizeSlider.value);
   brushSize = Math.min(brushSize, maxBrushSize);
   brushSizeSlider.setAttribute('max', maxBrushSize);
-  brushSizeLabel.textContent = `Brush Size: ${brushSize}`;
+
+  const brushSizeGridUnit = (brushSize * 2) + 1;
+  brushSizeLabel.textContent = `Brush: ${brushSizeGridUnit} x ${brushSizeGridUnit}`;
 }
 
 function updateSizeLabel() {
   const sizeLabel = document.querySelector('.btn-size__label');
 
   size = Number(sizeSlider.value);
-  sizeLabel.textContent = `Grid Size: ${size} x ${size}`;
+  sizeLabel.textContent = `Grid: ${size} x ${size}`;
 }
 
 function updateGridlines(e) {
