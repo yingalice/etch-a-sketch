@@ -6,7 +6,7 @@ let brushSize = 0;
 let size = 20;
 let hasGridlines = true;
 let isMouseDown = false;
-let prevNumCellsPainted = 0;
+let prevCenterCell = null;
 
 let cells = [];
 let historyBuffer = [];
@@ -122,22 +122,18 @@ function draw(e) {
   if (e.type === 'pointermove' && e.pointerType === 'mouse' && !isMouseDown) return;
   if (!target.classList.contains('grid__cell')) return;
   if (!target) return;
-
+  
   // Prevent sticky hover outline on touch devices
   if (e.type === 'pointerdown' && e.pointerType === 'touch') removeOutline();
 
-  // On touch devices, darken and lighten modes go to the maximum shade
-  // too quickly, because it updates with every little movement
-  // Don't allow painting the same cells back-to-back in the same brush stroke
-  const drawArea = getDrawArea(target);
-  const numCellsInDrawArea = drawArea.length;
-  if (numCellsInDrawArea === prevNumCellsPainted) {
-    const lastCellsPainted = historyBuffer.slice(-prevNumCellsPainted);
-    const isMatch = lastCellsPainted.every(historyItem => drawArea.includes(historyItem.div));
-    if (isMatch) return;
-  }
-  prevNumCellsPainted = numCellsInDrawArea;
+  // Any movement causes cell to be painted
+  // Do not repaint if still on same cell
+  // This prevents darken/lighten from reaching max shade immediately,
+  // and random from continuously changing colors
+  if (target === prevCenterCell) return;
+  prevCenterCell = target;
 
+  const drawArea = getDrawArea(target);
   drawArea.forEach(cell => {
     // Paint cells according the chosen mode
     let oldColor = getComputedStyle(cell).backgroundColor;
@@ -375,7 +371,7 @@ function saveHistory() {
   // Master history stores up to 25 entries
   // Ex: Painting 20 cells at once = stored as 1 entry, so undo/redo acts on all 20
   if (historyBuffer.length) {
-    prevNumCellsPainted = 0;
+    prevCenterCell = null;
     if (historyUndo.length >= 25) {
       historyUndo.shift();
     }
